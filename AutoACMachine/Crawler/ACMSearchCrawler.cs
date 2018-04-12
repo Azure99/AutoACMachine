@@ -113,6 +113,11 @@ namespace AutoACMachine
                 string tag = code.Substring(startP, endP - startP + 1);
                 code = code.Replace(tag, "");
             }
+
+            if (code.IndexOf("memset") != -1 && code.IndexOf("string") == -1)
+            {
+                code = "#include <cstring>\n" + code;
+            }
             return code;
         }
 
