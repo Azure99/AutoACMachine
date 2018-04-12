@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("AutoACMachine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("自动AC机")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Rainng")]
 [assembly: AssemblyProduct("AutoACMachine")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
