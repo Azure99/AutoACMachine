@@ -2,8 +2,9 @@
 
 namespace OnlineJudgeClient
 {
-    interface IOnlineJudgeClient
+    public interface IOnlineJudgeClient
     {
+        string OJName { get; }
         string Username { get; set; }
         string Password { get; set; }
         int Timeout { get; set; }

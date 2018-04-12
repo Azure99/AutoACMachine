@@ -28,21 +28,195 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.textBox_Msg = new System.Windows.Forms.TextBox();
+            this.button_Start = new System.Windows.Forms.Button();
+            this.comboBox_OJ = new System.Windows.Forms.ComboBox();
+            this.label_OJ = new System.Windows.Forms.Label();
+            this.label_Crawler = new System.Windows.Forms.Label();
+            this.label_Username = new System.Windows.Forms.Label();
+            this.label_Password = new System.Windows.Forms.Label();
+            this.label_StartID = new System.Windows.Forms.Label();
+            this.label_EndID = new System.Windows.Forms.Label();
+            this.textBox_Username = new System.Windows.Forms.TextBox();
+            this.textBox_Password = new System.Windows.Forms.TextBox();
+            this.textBox_StartID = new System.Windows.Forms.TextBox();
+            this.textBox_EndID = new System.Windows.Forms.TextBox();
+            this.comboBox_Crawler = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
+            // 
+            // textBox_Msg
+            // 
+            this.textBox_Msg.Location = new System.Drawing.Point(12, 190);
+            this.textBox_Msg.MaxLength = 32767000;
+            this.textBox_Msg.Multiline = true;
+            this.textBox_Msg.Name = "textBox_Msg";
+            this.textBox_Msg.ReadOnly = true;
+            this.textBox_Msg.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox_Msg.Size = new System.Drawing.Size(450, 437);
+            this.textBox_Msg.TabIndex = 13;
+            // 
+            // button_Start
+            // 
+            this.button_Start.Cursor = System.Windows.Forms.Cursors.Default;
+            this.button_Start.Location = new System.Drawing.Point(387, 151);
+            this.button_Start.Name = "button_Start";
+            this.button_Start.Size = new System.Drawing.Size(75, 23);
+            this.button_Start.TabIndex = 12;
+            this.button_Start.Text = "开始AC!";
+            this.button_Start.UseVisualStyleBackColor = true;
+            this.button_Start.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // comboBox_OJ
+            // 
+            this.comboBox_OJ.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_OJ.FormattingEnabled = true;
+            this.comboBox_OJ.Items.AddRange(new object[] {
+            "hdu"});
+            this.comboBox_OJ.Location = new System.Drawing.Point(49, 12);
+            this.comboBox_OJ.Name = "comboBox_OJ";
+            this.comboBox_OJ.Size = new System.Drawing.Size(160, 23);
+            this.comboBox_OJ.TabIndex = 1;
+            // 
+            // label_OJ
+            // 
+            this.label_OJ.AutoSize = true;
+            this.label_OJ.Location = new System.Drawing.Point(12, 15);
+            this.label_OJ.Name = "label_OJ";
+            this.label_OJ.Size = new System.Drawing.Size(31, 15);
+            this.label_OJ.TabIndex = 0;
+            this.label_OJ.Text = "OJ:";
+            // 
+            // label_Crawler
+            // 
+            this.label_Crawler.AutoSize = true;
+            this.label_Crawler.Location = new System.Drawing.Point(233, 15);
+            this.label_Crawler.Name = "label_Crawler";
+            this.label_Crawler.Size = new System.Drawing.Size(45, 15);
+            this.label_Crawler.TabIndex = 2;
+            this.label_Crawler.Text = "爬虫:";
+            // 
+            // label_Username
+            // 
+            this.label_Username.AutoSize = true;
+            this.label_Username.Location = new System.Drawing.Point(9, 58);
+            this.label_Username.Name = "label_Username";
+            this.label_Username.Size = new System.Drawing.Size(60, 15);
+            this.label_Username.TabIndex = 4;
+            this.label_Username.Text = "用户名:";
+            // 
+            // label_Password
+            // 
+            this.label_Password.AutoSize = true;
+            this.label_Password.Location = new System.Drawing.Point(233, 58);
+            this.label_Password.Name = "label_Password";
+            this.label_Password.Size = new System.Drawing.Size(45, 15);
+            this.label_Password.TabIndex = 6;
+            this.label_Password.Text = "密码:";
+            // 
+            // label_StartID
+            // 
+            this.label_StartID.AutoSize = true;
+            this.label_StartID.Location = new System.Drawing.Point(9, 104);
+            this.label_StartID.Name = "label_StartID";
+            this.label_StartID.Size = new System.Drawing.Size(91, 15);
+            this.label_StartID.TabIndex = 8;
+            this.label_StartID.Text = "起始题目ID:";
+            // 
+            // label_EndID
+            // 
+            this.label_EndID.AutoSize = true;
+            this.label_EndID.Location = new System.Drawing.Point(233, 104);
+            this.label_EndID.Name = "label_EndID";
+            this.label_EndID.Size = new System.Drawing.Size(91, 15);
+            this.label_EndID.TabIndex = 10;
+            this.label_EndID.Text = "结束题目ID:";
+            // 
+            // textBox_Username
+            // 
+            this.textBox_Username.Location = new System.Drawing.Point(75, 55);
+            this.textBox_Username.Name = "textBox_Username";
+            this.textBox_Username.Size = new System.Drawing.Size(134, 25);
+            this.textBox_Username.TabIndex = 5;
+            // 
+            // textBox_Password
+            // 
+            this.textBox_Password.Location = new System.Drawing.Point(285, 55);
+            this.textBox_Password.Name = "textBox_Password";
+            this.textBox_Password.PasswordChar = '*';
+            this.textBox_Password.Size = new System.Drawing.Size(177, 25);
+            this.textBox_Password.TabIndex = 7;
+            // 
+            // textBox_StartID
+            // 
+            this.textBox_StartID.Location = new System.Drawing.Point(109, 101);
+            this.textBox_StartID.Name = "textBox_StartID";
+            this.textBox_StartID.Size = new System.Drawing.Size(100, 25);
+            this.textBox_StartID.TabIndex = 9;
+            this.textBox_StartID.Text = "1000";
+            // 
+            // textBox_EndID
+            // 
+            this.textBox_EndID.Location = new System.Drawing.Point(341, 101);
+            this.textBox_EndID.Name = "textBox_EndID";
+            this.textBox_EndID.Size = new System.Drawing.Size(121, 25);
+            this.textBox_EndID.TabIndex = 11;
+            this.textBox_EndID.Text = "6000";
+            // 
+            // comboBox_Crawler
+            // 
+            this.comboBox_Crawler.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_Crawler.FormattingEnabled = true;
+            this.comboBox_Crawler.Items.AddRange(new object[] {
+            "ACMSearch"});
+            this.comboBox_Crawler.Location = new System.Drawing.Point(285, 12);
+            this.comboBox_Crawler.Name = "comboBox_Crawler";
+            this.comboBox_Crawler.Size = new System.Drawing.Size(177, 23);
+            this.comboBox_Crawler.TabIndex = 3;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(482, 653);
+            this.Controls.Add(this.comboBox_Crawler);
+            this.Controls.Add(this.textBox_EndID);
+            this.Controls.Add(this.textBox_StartID);
+            this.Controls.Add(this.textBox_Password);
+            this.Controls.Add(this.textBox_Username);
+            this.Controls.Add(this.label_EndID);
+            this.Controls.Add(this.label_StartID);
+            this.Controls.Add(this.label_Password);
+            this.Controls.Add(this.label_Username);
+            this.Controls.Add(this.label_Crawler);
+            this.Controls.Add(this.label_OJ);
+            this.Controls.Add(this.comboBox_OJ);
+            this.Controls.Add(this.button_Start);
+            this.Controls.Add(this.textBox_Msg);
             this.Name = "MainForm";
             this.Text = "自动AC机";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox textBox_Msg;
+        private System.Windows.Forms.Button button_Start;
+        private System.Windows.Forms.ComboBox comboBox_OJ;
+        private System.Windows.Forms.Label label_OJ;
+        private System.Windows.Forms.Label label_Crawler;
+        private System.Windows.Forms.Label label_Username;
+        private System.Windows.Forms.Label label_Password;
+        private System.Windows.Forms.Label label_StartID;
+        private System.Windows.Forms.Label label_EndID;
+        private System.Windows.Forms.TextBox textBox_Username;
+        private System.Windows.Forms.TextBox textBox_Password;
+        private System.Windows.Forms.TextBox textBox_StartID;
+        private System.Windows.Forms.TextBox textBox_EndID;
+        private System.Windows.Forms.ComboBox comboBox_Crawler;
     }
 }
 

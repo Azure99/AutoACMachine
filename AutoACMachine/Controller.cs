@@ -2,11 +2,160 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OnlineJudgeClient;
+using System.IO;
 
 namespace AutoACMachine
 {
     class Controller
     {
+        public IOnlineJudgeClient client = null;
+        public ICrawler crawler = null;
+        public string Username { get; set; }
+        public string Password { get; set; }
 
+        /// <summary>
+        /// 构造自动AC控制器
+        /// </summary>
+        /// <param name="client">OJ客户端实例</param>
+        /// <param name="crawler">代码爬虫实例</param>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        public Controller(IOnlineJudgeClient client, ICrawler crawler, string username, string password)
+        {
+            this.client = client;
+            this.crawler = crawler;
+            this.Username = username;
+            this.Password = password;
+        }
+
+        public bool Login()
+        {
+            WriteMessage("正在登录账号:" + Username);
+            bool isSuccess = client.Login(Username, Password);
+            if(isSuccess)
+            {
+                WriteMessage("登录成功");
+            }
+            else
+            {
+                WriteMessage("登录失败");
+            }
+            return isSuccess;
+        }
+
+        public void AutoAC(int startID, int endID)
+        {
+            int retryCount = 0;
+            while (!Login())
+            {
+                if (++retryCount >= 3)
+                {
+                    return;
+                }
+            }
+
+            for (int i = startID; i <= endID; i++)
+            {
+                SolveStatus status = SolveProblem(i);
+                if(status.Solved)
+                {
+                    WriteMessage(string.Format("题目{0}AC成功!", i));
+                }
+                else
+                {
+                    WriteMessage(string.Format("题目{0}AC失败!详情{1}", i, status.Detail));
+                }
+                WriteMessage("----------");
+            }
+        }
+
+        public SolveStatus SolveProblem(int problemID)
+        {
+            WriteMessage(string.Format("正在自动AC{0}的{1}题目", client.OJName, problemID));
+            SolveStatus solveStatus;
+            solveStatus.Solved = false;
+            solveStatus.Detail = "UnknownError";
+
+            if (client.IsAccepted(problemID, Username))//题目已经AC
+            {
+                solveStatus.Solved = true;
+                solveStatus.Detail = "AlreadyAccepted";
+                return solveStatus;
+            }
+
+            int retryCount = 0;//尝试次数
+            while (!client.IsAvailable(problemID))//问题是否可用
+            {
+                if (++retryCount >= 3)
+                {
+                    solveStatus.Detail = "ProblemNotFound";
+                    return solveStatus;
+                }
+            }
+
+            WriteMessage("正在爬取题目代码");
+            List<string> articlesList = crawler.GetACArticleLinks(problemID, client.OJName);
+            List<string> acCodeList = new List<string>();
+            foreach (string artLink in articlesList)
+            {
+                string code = crawler.GetCodeByArticleLink(artLink);
+                if (!string.IsNullOrEmpty(code))
+                {
+                    acCodeList.Add(code);
+                }
+            }
+
+            if (articlesList.Count == 0 || acCodeList.Count == 0)
+            {
+                solveStatus.Detail = "AcCodeNotFound";
+                return solveStatus;
+            }
+            WriteMessage("共爬取到" + acCodeList.Count.ToString() + "份代码");
+
+            JudgeStatus status = JudgeStatus.Unknown;
+            foreach (string code in acCodeList)
+            {
+                WriteMessage(string.Format("正在提交题目{0}，代码长度{1}", problemID, code.Length));
+                retryCount = 0;
+                while (!client.Submit(problemID, code))
+                {
+                    if (++retryCount >= 3)
+                    {
+                        continue;
+                    }
+                }
+
+                //提交后先等待
+                WriteMessage("正在取回判题结果");
+                System.Threading.Thread.Sleep(2000);
+                status = client.GetJudgeStatus(problemID, Username);
+                while (status == JudgeStatus.Queuing || status == JudgeStatus.Compiling || status == JudgeStatus.Running)
+                {
+                    status = client.GetJudgeStatus(problemID, Username);
+                    System.Threading.Thread.Sleep(2000);
+                }
+
+                WriteMessage(string.Format("OJ:{0}\tProblemID:{1}\tResult:{2}", client.OJName, problemID, status));
+                if (status == JudgeStatus.Accepted)
+                {
+                    File.WriteAllText(problemID.ToString() + ".txt", code);
+                    solveStatus.Solved = true;
+                    solveStatus.Detail = "Accepted";
+                    return solveStatus;
+                }
+                else
+                {
+                    solveStatus.Detail = status.ToString();
+                }
+            }
+
+            return solveStatus;
+        }
+
+        public void WriteMessage(string message)
+        {
+            MainForm.mainForm.AppendMessage(message);
+        }
     }
 }

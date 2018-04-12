@@ -7,6 +7,13 @@ namespace OnlineJudgeClient
 {
     public class HDUClient : IOnlineJudgeClient
     {
+        public string OJName
+        {
+            get
+            {
+                return "hdu";
+            }
+        }
         public string Username { get; set; }
         public string Password { get; set; }
         public int Timeout { get; set; }
