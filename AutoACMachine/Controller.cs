@@ -28,8 +28,8 @@ namespace AutoACMachine
         {
             this.client = client;
             this.crawler = crawler;
-            this.Username = username;
-            this.Password = password;
+            Username = username;
+            Password = password;
         }
 
         public bool Login()
@@ -117,9 +117,9 @@ namespace AutoACMachine
             }
 
             WriteMessage("正在爬取题目代码");
-            List<string> articlesList = crawler.GetACArticleLinks(problemID, client.OJName);
+            List<string> articlesList = crawler.GetACArticleLinks(problemID, client.OJName);//抓取题解链接
             List<string> acCodeList = new List<string>();
-            foreach (string artLink in articlesList)
+            foreach (string artLink in articlesList)//抓取题解代码
             {
                 string code = crawler.GetCodeByArticleLink(artLink);
                 if (!string.IsNullOrEmpty(code))
@@ -128,7 +128,7 @@ namespace AutoACMachine
                 }
             }
 
-            if (articlesList.Count == 0 || acCodeList.Count == 0)
+            if (articlesList.Count == 0 || acCodeList.Count == 0)//无代码
             {
                 solveStatus.Detail = "AcCodeNotFound";
                 return solveStatus;
@@ -136,7 +136,7 @@ namespace AutoACMachine
             WriteMessage("共爬取到" + acCodeList.Count.ToString() + "份代码");
 
             JudgeStatus status = JudgeStatus.Unknown;
-            foreach (string code in acCodeList)
+            foreach (string code in acCodeList)//尝试所有代码，直到AC为止
             {
                 WriteMessage(string.Format("正在提交题目{0}，代码长度{1}", problemID, code.Length));
                 retryCount = 0;
@@ -148,10 +148,11 @@ namespace AutoACMachine
                     }
                 }
 
-                //提交后先等待
+
                 WriteMessage("正在取回判题结果");
-                System.Threading.Thread.Sleep(2000);
+                System.Threading.Thread.Sleep(2000);//提交后先等待
                 status = client.GetJudgeStatus(problemID, Username);
+
                 while (status == JudgeStatus.Queuing || status == JudgeStatus.Compiling || status == JudgeStatus.Running)
                 {
                     status = client.GetJudgeStatus(problemID, Username);
