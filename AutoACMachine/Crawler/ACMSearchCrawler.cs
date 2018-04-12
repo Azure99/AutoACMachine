@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
+using System.Text;
 
-namespace AutoACMachine.Crawler
+namespace AutoACMachine
 {
     public class ACMSearchCrawler : ICrawler
     {

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller.cs" />
     <Compile Include="Crawler\ACMSearchCrawler.cs" />
     <Compile Include="Crawler\ICrawler.cs" />
     <Compile Include="MainForm.cs">
