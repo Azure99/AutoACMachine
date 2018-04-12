@@ -9,5 +9,6 @@ namespace AutoACMachine
     {
         public bool Solved;
         public string Detail;
+        public string Code;
     }
 }

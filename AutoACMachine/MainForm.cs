@@ -36,6 +36,7 @@ namespace AutoACMachine
             public string password;
             public int startID;
             public int endID;
+            public bool saveCode;
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -80,6 +81,8 @@ namespace AutoACMachine
             args.startID = startID;
             args.endID = endID;
 
+            args.saveCode = checkBox_SaveCode.Checked;
+
             button_Start.Enabled = false;
             Thread workThread = new Thread(new ParameterizedThreadStart(WorkThread));
             workThread.Start(args);
@@ -89,6 +92,7 @@ namespace AutoACMachine
         {
             WorkAgrs workAgrs = (WorkAgrs)args;
             Controller controller = new Controller(workAgrs.client, workAgrs.crawler, workAgrs.username, workAgrs.password);
+            controller.SaveCode = workAgrs.saveCode;
             controller.AutoAC(workAgrs.startID, workAgrs.endID);
             button_Start.Enabled = true;
         }

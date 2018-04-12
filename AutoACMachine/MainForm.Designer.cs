@@ -44,6 +44,7 @@
             this.comboBox_Crawler = new System.Windows.Forms.ComboBox();
             this.linkLabel_Blog = new System.Windows.Forms.LinkLabel();
             this.linkLabel_SourceCode = new System.Windows.Forms.LinkLabel();
+            this.checkBox_SaveCode = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // textBox_Msg
@@ -60,7 +61,7 @@
             // button_Start
             // 
             this.button_Start.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button_Start.Location = new System.Drawing.Point(387, 151);
+            this.button_Start.Location = new System.Drawing.Point(387, 147);
             this.button_Start.Name = "button_Start";
             this.button_Start.Size = new System.Drawing.Size(75, 23);
             this.button_Start.TabIndex = 12;
@@ -197,11 +198,22 @@
             this.linkLabel_SourceCode.Text = "SourceCode";
             this.linkLabel_SourceCode.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_SourceCode_LinkClicked);
             // 
+            // checkBox_SaveCode
+            // 
+            this.checkBox_SaveCode.AutoSize = true;
+            this.checkBox_SaveCode.Location = new System.Drawing.Point(236, 150);
+            this.checkBox_SaveCode.Name = "checkBox_SaveCode";
+            this.checkBox_SaveCode.Size = new System.Drawing.Size(105, 19);
+            this.checkBox_SaveCode.TabIndex = 16;
+            this.checkBox_SaveCode.Text = "保存AC代码";
+            this.checkBox_SaveCode.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 653);
+            this.Controls.Add(this.checkBox_SaveCode);
             this.Controls.Add(this.linkLabel_SourceCode);
             this.Controls.Add(this.linkLabel_Blog);
             this.Controls.Add(this.comboBox_Crawler);
@@ -245,6 +257,7 @@
         private System.Windows.Forms.ComboBox comboBox_Crawler;
         private System.Windows.Forms.LinkLabel linkLabel_Blog;
         private System.Windows.Forms.LinkLabel linkLabel_SourceCode;
+        private System.Windows.Forms.CheckBox checkBox_SaveCode;
     }
 }
 

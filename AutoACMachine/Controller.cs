@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OnlineJudgeClient;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace AutoACMachine
 {
@@ -13,6 +14,8 @@ namespace AutoACMachine
         public ICrawler crawler = null;
         public string Username { get; set; }
         public string Password { get; set; }
+
+        public bool SaveCode { get; set; }
 
         /// <summary>
         /// 构造自动AC控制器
@@ -58,9 +61,27 @@ namespace AutoACMachine
             for (int i = startID; i <= endID; i++)
             {
                 SolveStatus status = SolveProblem(i);
+
                 if(status.Solved)
                 {
                     WriteMessage(string.Format("题目{0}AC成功!", i));
+
+                    if (SaveCode && status.Detail == "Accepted") //保存代码
+                    {
+                        try
+                        {
+                            if(!Directory.Exists("Code"))
+                            {
+                                Directory.CreateDirectory("Code");
+                            }
+                            File.WriteAllText(string.Format("Code\\{0}-{1}.txt", client.OJName, i), status.Code);
+                        }
+                        catch
+                        {
+                            WriteMessage("保存代码失败!");
+                        }
+                    }
+
                 }
                 else
                 {
@@ -76,6 +97,7 @@ namespace AutoACMachine
             SolveStatus solveStatus;
             solveStatus.Solved = false;
             solveStatus.Detail = "UnknownError";
+            solveStatus.Code = "已AC，无需爬取，因此无代码";
 
             if (client.IsAccepted(problemID, Username))//题目已经AC
             {
@@ -139,9 +161,9 @@ namespace AutoACMachine
                 WriteMessage(string.Format("OJ:{0}\tProblemID:{1}\tResult:{2}", client.OJName, problemID, status));
                 if (status == JudgeStatus.Accepted)
                 {
-                    File.WriteAllText(problemID.ToString() + ".txt", code);
                     solveStatus.Solved = true;
                     solveStatus.Detail = "Accepted";
+                    solveStatus.Code = Regex.Replace(code, "\r\n|\r|\n", Environment.NewLine);
                     return solveStatus;
                 }
                 else
