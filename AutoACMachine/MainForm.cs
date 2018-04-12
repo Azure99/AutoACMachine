@@ -101,5 +101,15 @@ namespace AutoACMachine
         {
             Environment.Exit(0);
         }
+
+        private void linkLabel_Blog_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.rainng.com/");
+        }
+
+        private void linkLabel_SourceCode_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/Azure99/AutoACMachine");
+        }
     }
 }

@@ -42,6 +42,8 @@
             this.textBox_StartID = new System.Windows.Forms.TextBox();
             this.textBox_EndID = new System.Windows.Forms.TextBox();
             this.comboBox_Crawler = new System.Windows.Forms.ComboBox();
+            this.linkLabel_Blog = new System.Windows.Forms.LinkLabel();
+            this.linkLabel_SourceCode = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // textBox_Msg
@@ -173,11 +175,35 @@
             this.comboBox_Crawler.Size = new System.Drawing.Size(177, 23);
             this.comboBox_Crawler.TabIndex = 3;
             // 
+            // linkLabel_Blog
+            // 
+            this.linkLabel_Blog.AutoSize = true;
+            this.linkLabel_Blog.Location = new System.Drawing.Point(12, 151);
+            this.linkLabel_Blog.Name = "linkLabel_Blog";
+            this.linkLabel_Blog.Size = new System.Drawing.Size(39, 15);
+            this.linkLabel_Blog.TabIndex = 14;
+            this.linkLabel_Blog.TabStop = true;
+            this.linkLabel_Blog.Text = "BLOG";
+            this.linkLabel_Blog.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_Blog_LinkClicked);
+            // 
+            // linkLabel_SourceCode
+            // 
+            this.linkLabel_SourceCode.AutoSize = true;
+            this.linkLabel_SourceCode.Location = new System.Drawing.Point(72, 151);
+            this.linkLabel_SourceCode.Name = "linkLabel_SourceCode";
+            this.linkLabel_SourceCode.Size = new System.Drawing.Size(87, 15);
+            this.linkLabel_SourceCode.TabIndex = 15;
+            this.linkLabel_SourceCode.TabStop = true;
+            this.linkLabel_SourceCode.Text = "SourceCode";
+            this.linkLabel_SourceCode.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_SourceCode_LinkClicked);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 653);
+            this.Controls.Add(this.linkLabel_SourceCode);
+            this.Controls.Add(this.linkLabel_Blog);
             this.Controls.Add(this.comboBox_Crawler);
             this.Controls.Add(this.textBox_EndID);
             this.Controls.Add(this.textBox_StartID);
@@ -217,6 +243,8 @@
         private System.Windows.Forms.TextBox textBox_StartID;
         private System.Windows.Forms.TextBox textBox_EndID;
         private System.Windows.Forms.ComboBox comboBox_Crawler;
+        private System.Windows.Forms.LinkLabel linkLabel_Blog;
+        private System.Windows.Forms.LinkLabel linkLabel_SourceCode;
     }
 }
 
