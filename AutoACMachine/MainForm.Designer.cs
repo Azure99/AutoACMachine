@@ -253,7 +253,7 @@
             this.Controls.Add(this.button_Start);
             this.Controls.Add(this.textBox_Msg);
             this.Name = "MainForm";
-            this.Text = "自动AC机";
+            this.Text = "自动AC机 v0.03";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
