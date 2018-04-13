@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Text;
+using System.Net;
 
 namespace AutoACMachine
 {
-    public class ACMSearchCrawler : ICrawler
+    public class CSDNCrawler : ICrawler
     {
         /// <summary>
         /// 获取题解的ID
@@ -15,41 +16,38 @@ namespace AutoACMachine
         /// <returns>ID列表</returns>
         public List<string> GetACArticleLinks(int problemID, string oj = "hdu")
         {
-            oj = (oj == "hdu") ? "hdoj" : oj;
-
             string page = "";
             try
             {
                 using (WebClient wc = new WebClient())
                 {
                     wc.Proxy = null;
-                    string url = string.Format("http://www.acmsearch.com/article/?ArticleListSearch%5BFoj%5D={0}&ArticleListSearch%5BFproblem_id%5D={1}", oj, problemID);
+                    string url = string.Format("http://www.baidu.com/s?wd={0}%20{1}site%3Ablog.csdn.net", oj, problemID);
                     page = wc.DownloadString(url);
                 }
             }
             catch { }
-
-            List<string> answersList = new List<string>();
+            HashSet<string> answersList = new HashSet<string>();
 
             try
             {
-                const string startStr = "<a href=\"/article/show/";
+                const string startStr = "<div class=\"f13\"><a target=\"_blank\" href=\"";
                 int startP = page.IndexOf(startStr);
                 while (startP != -1)
                 {
-                    int endP = page.IndexOf("\" title=\"", startP);
-                    string answerID = page.Substring(startP + startStr.Length, endP - (startP + startStr.Length));
+                    int endP = page.IndexOf("\"", startP + startStr.Length);
+                    string answerLink = page.Substring(startP + startStr.Length, endP - (startP + startStr.Length));
 
-                    if (int.TryParse(answerID, out int id))
+                    if (answerLink.IndexOf("baidu") != -1)
                     {
-                        answersList.Add("http://www.acmsearch.com/article/show/" + id.ToString());
+                        answersList.Add(answerLink);
                     }
                     startP = page.IndexOf(startStr, endP);
                 }
             }
             catch { }
 
-            return answersList;
+            return answersList.ToList();
         }
 
         /// <summary>
@@ -77,6 +75,12 @@ namespace AutoACMachine
                 string startStr = "<pre ";
                 int startP = page.IndexOf(startStr);
                 if (startP == -1)
+                {
+                    return "";
+                }
+
+
+                if (!JudgeTittle(page, problemID, oj))
                 {
                     return "";
                 }
@@ -121,9 +125,37 @@ namespace AutoACMachine
             return code;
         }
 
+        public bool JudgeTittle(string page, int problemID, string ojName)
+        {
+            int startP = page.IndexOf("<title>");
+            int endP = page.IndexOf("</title>", startP);
+            string title = page.Substring(startP + "<title>".Length, endP - (startP + "<title>".Length));
+            Console.WriteLine(title);
+            if (title.IndexOf("CSDN博客") == -1)
+            {
+                return false;
+            }
+
+            if (title.IndexOf(problemID.ToString()) == -1)
+            {
+                return false;
+            }
+
+            if (title.ToLower().IndexOf(ojName.ToLower()) == -1)
+            {
+                return false;
+            }
+
+            if (title.IndexOf("赛") != -1 && problemID <= 1015)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public bool JudgeCode(string code)//判断代码是否合法
         {
-            if (code.IndexOf("<span") != -1 || code.IndexOf("<font") != -1 || code.IndexOf("<pre") != -1 || code.IndexOf("code>") != -1)
+            if (code.IndexOf("<span") != -1 || code.IndexOf("<font") != -1 || code.IndexOf("<pre") != -1 || code.IndexOf("code>") != -1 || code.IndexOf("<br />") != -1)
             {
                 return false;
             }

@@ -25,7 +25,6 @@ namespace AutoACMachine
             mainForm = this;
             comboBox_Crawler.SelectedIndex = 0;
             comboBox_OJ.SelectedIndex = 0;
-            
         }
         
         struct WorkAgrs
@@ -37,6 +36,7 @@ namespace AutoACMachine
             public int startID;
             public int endID;
             public bool saveCode;
+            public int maxRetry;
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -52,6 +52,10 @@ namespace AutoACMachine
             if(comboBox_Crawler.SelectedIndex == 0)
             {
                 args.crawler = new ACMSearchCrawler();
+            }
+            else
+            {
+                args.crawler = new CSDNCrawler();
             }
 
             if (string.IsNullOrEmpty(args.username = textBox_Username.Text)) 
@@ -78,8 +82,15 @@ namespace AutoACMachine
                 return;
             }
 
+            if (!int.TryParse(textBox_MaxRetry.Text, out int maxRetry))
+            {
+                MessageBox.Show("最多尝试次数只能为整数", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             args.startID = startID;
             args.endID = endID;
+            args.maxRetry = maxRetry;
 
             args.saveCode = checkBox_SaveCode.Checked;
 
@@ -93,6 +104,7 @@ namespace AutoACMachine
             WorkAgrs workAgrs = (WorkAgrs)args;
             Controller controller = new Controller(workAgrs.client, workAgrs.crawler, workAgrs.username, workAgrs.password);
             controller.SaveCode = workAgrs.saveCode;
+            controller.MaxRetry = workAgrs.maxRetry;
             controller.AutoAC(workAgrs.startID, workAgrs.endID);
             button_Start.Enabled = true;
         }

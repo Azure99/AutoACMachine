@@ -45,6 +45,8 @@
             this.linkLabel_Blog = new System.Windows.Forms.LinkLabel();
             this.linkLabel_SourceCode = new System.Windows.Forms.LinkLabel();
             this.checkBox_SaveCode = new System.Windows.Forms.CheckBox();
+            this.textBox_MaxRetry = new System.Windows.Forms.TextBox();
+            this.label_MaxRetry = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox_Msg
@@ -170,7 +172,8 @@
             this.comboBox_Crawler.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Crawler.FormattingEnabled = true;
             this.comboBox_Crawler.Items.AddRange(new object[] {
-            "ACMSearch"});
+            "ACMSearch",
+            "CSDN"});
             this.comboBox_Crawler.Location = new System.Drawing.Point(285, 12);
             this.comboBox_Crawler.Name = "comboBox_Crawler";
             this.comboBox_Crawler.Size = new System.Drawing.Size(177, 23);
@@ -201,18 +204,37 @@
             // checkBox_SaveCode
             // 
             this.checkBox_SaveCode.AutoSize = true;
-            this.checkBox_SaveCode.Location = new System.Drawing.Point(236, 150);
+            this.checkBox_SaveCode.Location = new System.Drawing.Point(173, 151);
             this.checkBox_SaveCode.Name = "checkBox_SaveCode";
-            this.checkBox_SaveCode.Size = new System.Drawing.Size(105, 19);
+            this.checkBox_SaveCode.Size = new System.Drawing.Size(89, 19);
             this.checkBox_SaveCode.TabIndex = 16;
-            this.checkBox_SaveCode.Text = "保存AC代码";
+            this.checkBox_SaveCode.Text = "保存代码";
             this.checkBox_SaveCode.UseVisualStyleBackColor = true;
+            // 
+            // textBox_MaxRetry
+            // 
+            this.textBox_MaxRetry.Location = new System.Drawing.Point(350, 145);
+            this.textBox_MaxRetry.Name = "textBox_MaxRetry";
+            this.textBox_MaxRetry.Size = new System.Drawing.Size(25, 25);
+            this.textBox_MaxRetry.TabIndex = 17;
+            this.textBox_MaxRetry.Text = "5";
+            // 
+            // label_MaxRetry
+            // 
+            this.label_MaxRetry.AutoSize = true;
+            this.label_MaxRetry.Location = new System.Drawing.Point(269, 150);
+            this.label_MaxRetry.Name = "label_MaxRetry";
+            this.label_MaxRetry.Size = new System.Drawing.Size(75, 15);
+            this.label_MaxRetry.TabIndex = 18;
+            this.label_MaxRetry.Text = "最多尝试:";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 653);
+            this.Controls.Add(this.label_MaxRetry);
+            this.Controls.Add(this.textBox_MaxRetry);
             this.Controls.Add(this.checkBox_SaveCode);
             this.Controls.Add(this.linkLabel_SourceCode);
             this.Controls.Add(this.linkLabel_Blog);
@@ -258,6 +280,8 @@
         private System.Windows.Forms.LinkLabel linkLabel_Blog;
         private System.Windows.Forms.LinkLabel linkLabel_SourceCode;
         private System.Windows.Forms.CheckBox checkBox_SaveCode;
+        private System.Windows.Forms.TextBox textBox_MaxRetry;
+        private System.Windows.Forms.Label label_MaxRetry;
     }
 }
 

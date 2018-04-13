@@ -17,6 +17,8 @@ namespace AutoACMachine
 
         public bool SaveCode { get; set; }
 
+        public int MaxRetry { get; set; }
+
         /// <summary>
         /// 构造自动AC控制器
         /// </summary>
@@ -30,6 +32,7 @@ namespace AutoACMachine
             this.crawler = crawler;
             Username = username;
             Password = password;
+            MaxRetry = 100;
         }
 
         public bool Login()
@@ -60,7 +63,7 @@ namespace AutoACMachine
 
             for (int i = startID; i <= endID; i++)
             {
-                SolveStatus status = SolveProblem(i);
+                SolveStatus status = SolveProblem(i, MaxRetry);
 
                 if(status.Solved)
                 {
@@ -91,7 +94,7 @@ namespace AutoACMachine
             }
         }
 
-        public SolveStatus SolveProblem(int problemID)
+        public SolveStatus SolveProblem(int problemID, int maxRetry)
         {
             WriteMessage(string.Format("正在自动AC{0}的{1}题目", client.OJName, problemID));
             SolveStatus solveStatus;
@@ -121,7 +124,7 @@ namespace AutoACMachine
             List<string> acCodeList = new List<string>();
             foreach (string artLink in articlesList)//抓取题解代码
             {
-                string code = crawler.GetCodeByArticleLink(artLink);
+                string code = crawler.GetCodeByArticleLink(artLink, problemID, client.OJName);
                 if (!string.IsNullOrEmpty(code))
                 {
                     acCodeList.Add(code);
@@ -138,6 +141,14 @@ namespace AutoACMachine
             JudgeStatus status = JudgeStatus.Unknown;
             foreach (string code in acCodeList)//尝试所有代码，直到AC为止
             {
+                if (maxRetry-- <= 0)//最大尝试次数
+                {
+                    solveStatus.Detail = "RetryLimitExceeded";
+                    WriteMessage("超出最大尝试次数");
+                    return solveStatus;
+                }
+                WriteMessage(maxRetry.ToString());
+
                 WriteMessage(string.Format("正在提交题目{0}，代码长度{1}", problemID, code.Length));
                 retryCount = 0;
                 while (!client.Submit(problemID, code))
@@ -150,7 +161,7 @@ namespace AutoACMachine
 
 
                 WriteMessage("正在取回判题结果");
-                System.Threading.Thread.Sleep(2000);//提交后先等待
+                System.Threading.Thread.Sleep(6000);//提交后先等待
                 status = client.GetJudgeStatus(problemID, Username);
 
                 while (status == JudgeStatus.Queuing || status == JudgeStatus.Compiling || status == JudgeStatus.Running)

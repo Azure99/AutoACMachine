@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Controller.cs" />
     <Compile Include="Crawler\ACMSearchCrawler.cs" />
+    <Compile Include="Crawler\CSDNCrawler.cs" />
     <Compile Include="Crawler\ICrawler.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
