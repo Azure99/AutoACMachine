@@ -48,6 +48,10 @@ namespace AutoACMachine
             {
                 args.client = new HDUClient();
             }
+            else if(comboBox_OJ.SelectedIndex == 1)
+            {
+                args.client = new ZOJClient();
+            }
 
             if(comboBox_Crawler.SelectedIndex == 0)
             {

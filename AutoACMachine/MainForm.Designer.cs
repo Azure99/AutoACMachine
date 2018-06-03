@@ -76,7 +76,8 @@
             this.comboBox_OJ.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_OJ.FormattingEnabled = true;
             this.comboBox_OJ.Items.AddRange(new object[] {
-            "hdu"});
+            "hdu",
+            "zoj"});
             this.comboBox_OJ.Location = new System.Drawing.Point(49, 12);
             this.comboBox_OJ.Name = "comboBox_OJ";
             this.comboBox_OJ.Size = new System.Drawing.Size(160, 23);

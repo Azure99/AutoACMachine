@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.IO;
 using System.Net;
-using System.Text;
 
 namespace OnlineJudgeClient
 {
-    public class HDUClient : IOnlineJudgeClient
+    public class ZOJClient : IOnlineJudgeClient
     {
         public string OJName
         {
             get
             {
-                return "hdu";
+                return "zoj";
             }
         }
         public string Username { get; set; }
@@ -20,7 +22,7 @@ namespace OnlineJudgeClient
         CookieContainer cookie = new CookieContainer();
 
         /// <param name="timeout">操作超时时间</param>
-        public HDUClient(int timeout = 10000)
+        public ZOJClient(int timeout = 10000)
         {
             Timeout = timeout;
         }
@@ -37,8 +39,8 @@ namespace OnlineJudgeClient
             Password = password;
             try
             {
-                string res = POST("http://acm.hdu.edu.cn/userloginex.php?action=login", string.Format("username={0}&userpass={1}&login=Sign+In", username, password));
-                if (res.IndexOf(username) != -1 && res.IndexOf("wrong password") == -1)
+                string res = POST("http://acm.zju.edu.cn/onlinejudge/login.do", string.Format("handle={0}&password={1}", username, password));
+                if (res.IndexOf(username) != -1 && res.IndexOf("invalid") == -1)
                 {
                     return true;
                 }
@@ -58,8 +60,8 @@ namespace OnlineJudgeClient
         {
             try
             {
-                string res = GET("http://acm.hdu.edu.cn/control_panel.php");
-                if (res.IndexOf("My Control Panel") != -1)
+                string res = GET("http://acm.zju.edu.cn/onlinejudge/editProfile.do");
+                if (res.IndexOf("Edit Profile") != -1)
                 {
                     return true;
                 }
@@ -80,18 +82,17 @@ namespace OnlineJudgeClient
         /// <returns>是否提交成功</returns>
         public bool Submit(int problemID, string code, int language = -1)
         {
-
-            if (language == -1)
+            if(language == -1)
             {
-                language = 0;
+                language = 2;
             }
 
-            string data = string.Format("check=0&problemid={0}&language={1}&usercode={2}",
-                problemID, language, System.Web.HttpUtility.UrlEncode(code));
+            string data = string.Format("problemId={0}&languageId={1}&source={2}",
+                GetReallyProblemID(problemID), language, System.Web.HttpUtility.UrlEncode(code));
 
             try
             {
-                POST("http://acm.hdu.edu.cn/submit.php?action=submit", data);
+                string res = POST("http://acm.zju.edu.cn/onlinejudge/submit.do", data);
                 return true;
             }
             catch
@@ -109,71 +110,79 @@ namespace OnlineJudgeClient
         /// <returns></returns>
         public JudgeStatus GetJudgeStatus(int problemID, string author, int language = -1)
         {
-            if (language == -1) 
+            if(language == -1)
             {
-                language = 0;
+                language = 2;
             }
 
             try
             {
-                string url = string.Format("http://acm.hdu.edu.cn/status.php?first=&pid={0}&user={1}&lang={2}&status=0", problemID, author, language);
+                string url = string.Format("http://acm.zju.edu.cn/onlinejudge/showRuns.do?contestId=1&search=true&problemCode={0}&handle={1}&languageIds={2}", problemID, author, language);
                 string res = GET(url);
 
                 //处理字符串的异常直接全判为Unknown，省事
-                int startP = res.IndexOf("<tr align=center ><td height=22px>");
+                int startP = res.IndexOf("<td class=\"runJudgeStatus\">");
+                startP = res.IndexOf("<td class=\"runJudgeStatus\">", startP + 10);
 
-                int statusStartP = res.IndexOf("<font color=", startP);
-                statusStartP = res.IndexOf(">", statusStartP) + 1;
+                int endP = res.IndexOf("</a>", startP);
 
-                int statusEndP = res.IndexOf("</font>", statusStartP);
+                string status = res.Substring(startP, endP - startP);
 
-                string status = res.Substring(statusStartP, statusEndP - statusStartP);
                 JudgeStatus judgeStatus;
 
-                switch (status)
+                if(status.IndexOf("Accepted") != -1)
                 {
-                    case "Queuing":
-                        judgeStatus = JudgeStatus.Queuing;
-                        break;
-                    case "Compiling":
-                        judgeStatus = JudgeStatus.Compiling;
-                        break;
-                    case "Running":
-                        judgeStatus = JudgeStatus.Running;
-                        break;
-                    case "Accepted":
-                        judgeStatus = JudgeStatus.Accepted;
-                        break;
-                    case "Wrong Answer":
-                        judgeStatus = JudgeStatus.WrongAnswer;
-                        break;
-                    case "Presentation Error":
-                        judgeStatus = JudgeStatus.PresentationError;
-                        break;
-                    case "Compilation Error":
-                        judgeStatus = JudgeStatus.CompilationError;
-                        break;
-                    case "Time Limit Exceeded":
-                        judgeStatus = JudgeStatus.TimeLimitExceeded;
-                        break;
-                    case "Memory Limit Exceeded":
-                        judgeStatus = JudgeStatus.MemoryLimitExceeded;
-                        break;
-                    case "Output Limit Exceeded":
-                        judgeStatus = JudgeStatus.OutputLimitExceeded;
-                        break;
-
-                    default:
-                        judgeStatus = JudgeStatus.Unknown;
-                        break;
+                    judgeStatus = JudgeStatus.Accepted;
                 }
-
-                if (status.IndexOf("Runtime Error") != -1) //RE要特判
+                else if(status.IndexOf("Presentation Error") != -1)
+                {
+                    judgeStatus = JudgeStatus.PresentationError;
+                }
+                else if(status.IndexOf("Wrong Answer") != -1)
+                {
+                    judgeStatus = JudgeStatus.WrongAnswer;
+                }
+                else if(status.IndexOf("Time Limit Exceeded") != -1)
+                {
+                    judgeStatus = JudgeStatus.TimeLimitExceeded;
+                }
+                else if(status.IndexOf("Memory Limit Exceeded") != -1)
+                {
+                    judgeStatus = JudgeStatus.MemoryLimitExceeded;
+                }
+                else if(status.IndexOf("Segmentation Fault") != -1)
                 {
                     judgeStatus = JudgeStatus.RuntimeError;
                 }
+                else if(status.IndexOf("Non-zero Exit Code") != -1)
+                {
+                    judgeStatus = JudgeStatus.RuntimeError;
+                }
+                else if(status.IndexOf("Floating Point Error") != -1)
+                {
+                    judgeStatus = JudgeStatus.RuntimeError;
+                }
+                else if(status.IndexOf("Compilation Error") != -1)
+                {
+                    judgeStatus = JudgeStatus.CompilationError;
+                }
+                else if(status.IndexOf("Output Limit Exceeded") != -1)
+                {
+                    judgeStatus = JudgeStatus.OutputLimitExceeded;
+                }
+                else if(status.IndexOf("Running") != -1)
+                {
+                    judgeStatus = JudgeStatus.Compiling;
+                }
+                else if(status.IndexOf("Compiling") != -1)
+                {
+                    judgeStatus = JudgeStatus.Running;
+                }
+                else
+                {
+                    judgeStatus = JudgeStatus.Unknown;
+                }
 
-                System.Diagnostics.Debug.WriteLine(status);
                 return judgeStatus;
 
             }
@@ -192,7 +201,7 @@ namespace OnlineJudgeClient
         {
             try
             {
-                string page = GET(string.Format("http://acm.hdu.edu.cn/showproblem.php?pid={0}", problemID));
+                string page = GET(string.Format("http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode={0}", problemID));
                 if (page.IndexOf("No such problem") == -1)
                 {
                     return true;
@@ -217,6 +226,25 @@ namespace OnlineJudgeClient
         public bool IsAccepted(int problemID, string username)
         {
             return GetJudgeStatus(problemID, username) == JudgeStatus.Accepted;
+        }
+
+        private int GetReallyProblemID(int id)//ZOJ显示的题号与提交时的题号并不是对应的
+        {
+
+            const string startStr = "<a href=\"/onlinejudge/submit.do?problemId=";
+            const string endStr = "\">";
+            try
+            {
+                string res = GET("http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=" + id.ToString());
+                int startP = res.IndexOf(startStr);
+                int endP = res.IndexOf(endStr, startP + startStr.Length);
+
+                return int.Parse(res.Substring(startP + startStr.Length, endP - startP - startStr.Length));
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public string POST(string url, string data = "")
